@@ -57,6 +57,21 @@ public:
       this->time = signal.length();
     }
   }
+  /*SignalState(const bool *signal, int length){
+    if (signal == nullptr || length <= 0){
+      throw std::invalid_argument("error: invalid array of signal");
+    }
+    else{
+      this->level = signal[0];
+      this->time = 1;
+      for (int i = 0; i < length; i++){
+        if (this->level != signal[i]){ 
+          (this->time)++;
+          break; 
+        }
+      }
+    }
+  }*/
 
   void invertSignal(){
     level = !level;
