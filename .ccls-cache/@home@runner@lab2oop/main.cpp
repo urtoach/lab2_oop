@@ -3,7 +3,9 @@
 #include <iostream>
 #include <limits>
 #include <string>
+#include "SignalState.h"
 
+/*
 template <class T>
 
 T getNum(T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::max()) {
@@ -47,16 +49,18 @@ public:
       throw std::invalid_argument("error: invalid characters in string");
     }
     else{
-      for (int i = 0; i < signal.length(); i++) {
+      int i;
+      for (i = 0; i < signal.length(); i++) {
         if (signal[i] != signal[0]) {
           signal.erase(i);
           break;
         }
       }
       this->level = signal[0];
-      this->time = signal.length();
+      this->time = i+1;
     }
   }
+
   /*SignalState(const bool *signal, int length){
     if (signal == nullptr || length <= 0){
       throw std::invalid_argument("error: invalid array of signal");
@@ -71,7 +75,7 @@ public:
         }
       }
     }
-  }*/
+  }/////
 
   void invertSignal(){
     level = !level;
@@ -106,6 +110,13 @@ public:
   }
   
 };
+*/
+
+
+
+
+
+using namespace lab2; 
 
 int main(){
   SignalState a;

@@ -1,0 +1,4 @@
+/home/runner/lab2oop/build/CMakeFiles/signalstate.dir
+/home/runner/lab2oop/build/CMakeFiles/main.dir
+/home/runner/lab2oop/build/CMakeFiles/edit_cache.dir
+/home/runner/lab2oop/build/CMakeFiles/rebuild_cache.dir

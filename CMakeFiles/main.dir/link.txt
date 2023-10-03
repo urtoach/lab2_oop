@@ -1,0 +1,1 @@
+/nix/store/dq0xwmsk1g0i2ayg6pb7y87na2knzylh-gcc-wrapper-11.3.0/bin/g++  -Wall -Wextra CMakeFiles/main.dir/main.cpp.o -o main  libsignalstate.a 
