@@ -23,12 +23,6 @@ public:
   SignalState(std::string &signal);
   SignalState(std::vector<int> &signal);
   SignalState(const SignalState &other);
-  bool getLevel() const{
-    return level;
-  }
-  size_t getTime() const{
-    return time;
-  }
   void invertSignal();
   void elongateSignal(int duration);
   void truncateSignal(int duration);

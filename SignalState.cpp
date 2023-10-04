@@ -111,6 +111,7 @@ namespace lab2{
   }
   
   BinarySignal::BinarySignal(const BinarySignal& other) : count(other.count), signal(new SignalState[other.count]) {
+    count = other.count;
     for (size_t i = 0; i < count; i++) {
       signal[i] = other.signal[i]; 
     }
@@ -120,7 +121,7 @@ namespace lab2{
     delete[] signal;
   }
 
-  BinarySignal::BinarySignal &operator *=(int n){
+  BinarySignal &BinarySignal::operator *=(int n){
     if (n <= 0){ 
       throw std::invalid_argument("error: not positive number");
     }    
@@ -140,7 +141,7 @@ namespace lab2{
     return *this;
   }
 
-  BinarySignal::BinarySignal operator *(int n) const{
+  BinarySignal BinarySignal::operator *(int n) const{
     if (n <= 0) {
       throw std::invalid_argument("error: not positive number");
     }
@@ -149,7 +150,7 @@ namespace lab2{
     return result;
   }
   
-  BinarySignal::BinarySignal &operator +=(const BinarySignal &other){
+  BinarySignal &BinarySignal::operator +=(const BinarySignal &other){
     if (other.count != 0){
       SignalState *result = new SignalState[count + other.count];
       int j = 0;
@@ -168,7 +169,7 @@ namespace lab2{
     return *this;
   }
 
-  BinarySignal::BinarySignal &operator +=(const SignalState &other){
+  BinarySignal &BinarySignal::operator +=(const SignalState &other){
     if (other.time != 0){
       SignalState *result = new SignalState[count + 1];
       for (int i = 0; i < count; i++){
@@ -217,7 +218,7 @@ namespace lab2{
     return formated_signal;
   }
 
-  BinarySignal::BinarySignal &insertSignal(const BinarySignal &other, int time){
+  BinarySignal &BinarySignal::insertSignal(const BinarySignal &other, int time){
     if (time < 0 || time > count){
       throw std::invalid_argument("error: invalid inseption time");
     }
@@ -225,7 +226,7 @@ namespace lab2{
       BinarySignal result(other);
       result += *this;
       delete [] signal;
-      *this = BinarySignal(result);
+      *this = result;
     }
     else{
       BinarySignal result;
@@ -257,7 +258,7 @@ namespace lab2{
     return *this;
   }
 
-  BinarySignal::BinarySignal &removeSignal(int time, int duration){
+  BinarySignal &BinarySignal::removeSignal(int time, int duration){
     if (time < 0 || time >= count){
       throw std::invalid_argument("error: invalid time");
     }
@@ -287,7 +288,7 @@ namespace lab2{
     }
 
     delete[] signal;
-    *this = BinarySignal(before_interval);
+    *this = before_interval;
     *this += after_interval;
     return *this;
   }
