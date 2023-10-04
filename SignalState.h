@@ -10,7 +10,10 @@
 
 namespace lab2{
 
+class BinarySignal;
+  
 class SignalState {
+  friend class BinarySignal;
 private:
   bool level;
   size_t time;
@@ -20,6 +23,12 @@ public:
   SignalState(std::string &signal);
   SignalState(std::vector<int> &signal);
   SignalState(const SignalState &other);
+  bool getLevel() const{
+    return level;
+  }
+  size_t getTime() const{
+    return time;
+  }
   void invertSignal();
   void elongateSignal(int duration);
   void truncateSignal(int duration);
@@ -28,74 +37,35 @@ public:
 
 class BinarySignal{
 private:
-  size_t time;
+  size_t count;
   SignalState *signal;
 public:
-  BinarySignal() : time(1), signal(new SignalState[this->time]) {}
-  BinarySignal(std::string signal_str){
-    if (signal_str.find_first_not_of("01") != std::string::npos){
-      throw std::invalid_argument("error: invalid characters in string");
-    }
-    else {
-      this->time = signal_str.length();
-      signal = new SignalState[this->time];
-      for (int i = 0; i < this->time; i++){
-        signal[i] = SignalState(signal_str[i], 1);
-      }
-    }
-  }
-  BinarySignal(const BinarySignal& other) : time(other.time), signal(new SignalState[other.time]) {
-    for (size_t i = 0; i < time; i++) {
+  BinarySignal() : count(1), signal(new SignalState[this->count]) {}
+  BinarySignal(bool level, int time): count(1), signal(new SignalState[this->count]) {}
+  
+  BinarySignal(std::string signal_str);
+  
+  BinarySignal(const BinarySignal& other) : count(other.count), signal(new SignalState[other.count]) {
+    for (size_t i = 0; i < count; i++) {
       signal[i] = other.signal[i]; 
     }
   }
-
   ~BinarySignal(){
     delete[] signal;
   }
 
-  BinarySignal &operator *(int n){
-    if (n <= 0){ 
-      throw std::invalid_argument("error: not positive number");
-    }    
-    else{
-      SignalState *result = new SignalState[n * time];
-      int k = 0;
-      for (int i = 0; i < n; i++){
-        for (int j = 0; j < time; j++){
-          result[k] = signal[j];
-          k++;
-        }
-      }
-      delete[] signal;
-      this->signal = result;
-      this->time = time*n;
-    }
-  }
-  
-  BinarySignal &operator +=(const BinarySignal &other){
-    if (other.time != 0){
-      SignalState *result = new SignalState[time + other.time];
-      int j = 0;
-      for (int i = 0; i < time; i++){
-        result[j] = signal[i];
-        j++;
-      }
-      for (int i = 0; i < other.time; i++){
-        result[j] = other.signal[i];
-        j++;
-      }
-      delete[] signal;
-      this->signal = result;
-      this->time = time + other.time;
-    }
-  }
-  
-  void invertSignal(){
-    
-  }
+  BinarySignal &operator *=(int n);
+  BinarySignal operator *(int n) const;
+  BinarySignal &operator +=(const BinarySignal &other);
+  BinarySignal &operator +=(const SignalState &other);
 
-}
+  bool operator[](int time);
+  void invertSignal();
+  std::string formatedSignal() const;
+  BinarySignal &insertSignal(const BinarySignal &other, int time);
+  BinarySignal &removeSignal(int time, int duration);
+  
+};
 
   
 }
