@@ -16,13 +16,14 @@ class SignalState {
   friend class BinarySignal;
 private:
   bool level;
-  size_t time;
+  int time;
 public:
   SignalState() : level(0), time(0) {}
   SignalState(bool level, int time);
   SignalState(std::string &signal);
   SignalState(std::vector<int> &signal);
   SignalState(const SignalState &other);
+  SignalState &operator =(const SignalState &other);
   void invertSignal();
   void elongateSignal(int duration);
   void truncateSignal(int duration);
@@ -31,23 +32,17 @@ public:
 
 class BinarySignal{
 private:
-  size_t count;
+  int count;
   SignalState *signal;
 public:
   BinarySignal() : count(1), signal(new SignalState[this->count]) {}
-  BinarySignal(bool level, int time): count(1), signal(new SignalState[this->count]) {}
-  
+  BinarySignal(bool level, int time);
   BinarySignal(std::string signal_str);
-  
-  BinarySignal(const BinarySignal& other) : count(other.count), signal(new SignalState[other.count]) {
-    for (size_t i = 0; i < count; i++) {
-      signal[i] = other.signal[i]; 
-    }
-  }
+  BinarySignal(const BinarySignal& other);
   ~BinarySignal(){
     delete[] signal;
   }
-
+  BinarySignal &operator =(const BinarySignal &other);
   BinarySignal &operator *=(int n);
   BinarySignal operator *(int n) const;
   BinarySignal &operator +=(const BinarySignal &other);

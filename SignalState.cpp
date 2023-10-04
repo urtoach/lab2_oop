@@ -14,7 +14,7 @@ namespace lab2{
       throw std::invalid_argument("error: invalid characters in string");
     }
     else{
-      for (int i = 0; i < signal.length(); i++) {
+      for (int i = 0; i < (int)signal.length(); i++) {
         if (signal[i] != signal[0]) {
           signal.erase(i);
           break;
@@ -30,7 +30,7 @@ namespace lab2{
     }
     int count = 0;
     this->level = (signal[0] != 0);
-    for (int i = 0; i < signal.size(); i++){
+    for (int i = 0; i < (int)signal.size(); i++){
       if (signal[i] != this->level){
         break;
       }
@@ -42,6 +42,12 @@ namespace lab2{
   SignalState::SignalState(const SignalState &other){
     this->level = other.level;
     this->time = other.time;
+  }
+
+  SignalState &SignalState::operator =(const SignalState &other){
+    this->level = other.level;
+    this->time = other.time;
+    return *this;
   }
 
   void SignalState::invertSignal(){
@@ -99,7 +105,7 @@ namespace lab2{
       signal = new SignalState[count];
       int index = 0;
       curr = signal_str[0];
-      for (int i = 0; i < signal_str.length(); i++){
+      for (int i = 0; i < (int)signal_str.length(); i++){
         if (signal_str[i] != curr){
           signal[index++] = SignalState(signal_str);
           signal_str.erase(0, i + 1);
@@ -111,14 +117,20 @@ namespace lab2{
   }
   
   BinarySignal::BinarySignal(const BinarySignal& other) : count(other.count), signal(new SignalState[other.count]) {
-    count = other.count;
-    for (size_t i = 0; i < count; i++) {
-      signal[i] = other.signal[i]; 
+    this->count = other.count;
+    this->signal = new SignalState[count];
+    for (int i = 0; i < count; i++) {
+      this->signal[i] = other.signal[i]; 
     }
   }
 
-  ~BinarySignal(){
-    delete[] signal;
+  BinarySignal &BinarySignal::operator =(const BinarySignal &other){
+    this->count = other.count;
+    this->signal = new SignalState[count];
+    for (int i = 0; i < count; i++) {
+      this->signal[i] = other.signal[i]; 
+    }
+    return *this;
   }
 
   BinarySignal &BinarySignal::operator *=(int n){
@@ -191,6 +203,7 @@ namespace lab2{
         return signal[i].level;
       }
     }
+    throw std::invalid_argument("error: strange error xD");
   }
 
   
@@ -205,7 +218,7 @@ namespace lab2{
     for (int i = 0; i < count; i++){
       formated_signal += signal[i].formatSignal();
     }
-    for (int i = 1; i < formated_signal.length(); i++){
+    for (int i = 1; i < (int)formated_signal.length(); i++){
       if (formated_signal[i-1] < formated_signal[i]){
         formated_signal.insert(i, 1, '\\');
         i++;
