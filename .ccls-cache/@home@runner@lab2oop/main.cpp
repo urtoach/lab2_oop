@@ -37,7 +37,17 @@ T getNum(T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::
 using namespace lab2; 
 
 int main(){
+
+  std::cout << "enter str5:" << std::endl;
+  std::string str5;
+  std::cin >> str5;
+  BinarySignal signal5(str5);
+  std::cout << "ur str5:" << std::endl;
+  std::cout << signal5.formatedSignal() << std::endl;
+  signal5.removeSignal(2, 4);
+  std::cout << signal5.formatedSignal() << std::endl;
   
+  /*
   std::cout << "enter str1:" << std::endl;
   std::string str1;
   std::cin >> str1;
@@ -78,6 +88,6 @@ int main(){
 
   signal4.insertSignal(str5, n);
   std::cout << "\nur new str4, str5 in str4:" << std::endl;
-  std::cout << signal4.formatedSignal() << std::endl;
+  std::cout << signal4.formatedSignal() << std::endl;*/
   
 }

@@ -205,7 +205,7 @@ namespace lab2{
     return *this;
   }
 
-  bool BinarySignal::operator[](int time){
+  bool BinarySignal::operator [](int time){
     int sum_time = 0;
     for (int i = 0; i < count; i++){
       sum_time += signal[i].time;
@@ -221,6 +221,13 @@ namespace lab2{
     for (int i = 0; i < count; i++){
       signal[i].invertSignal();
     }
+  }
+
+  BinarySignal &BinarySignal::operator ~(){
+    for (int i = 0; i < count; i++){
+      signal[i].invertSignal();
+    }
+    return *this;
   }
 
   std::string BinarySignal::formatedSignal() const{
