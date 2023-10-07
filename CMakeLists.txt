@@ -8,7 +8,7 @@ project(ooplab2)
 set(CMAKE_CXX_STANDARD 20)
 
 # установка флагов компилятора: CMAKE_CXX_FLAGS += -Wall -Wextra
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wextra")
 
 # создание библиотеки prog1
 add_library(SignalState SignalState.h SignalState.cpp)

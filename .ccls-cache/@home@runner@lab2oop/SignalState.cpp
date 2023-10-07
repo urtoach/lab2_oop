@@ -312,14 +312,18 @@ namespace lab2{
         sum_time += signal[i].time;
         if (sum_time <= start_time) {
             before_interval += signal[i];
-        } else if (sum_time < end_time) {
+        } else if (sum_time - signal[i].time > end_time) {
+            /*if (i > 0 && sum_time + signal[i-1].time > end_time){
+              after_interval += SignalState(signal[i].level, sum_time - end_time);
+              continue;
+            }*/
             after_interval += signal[i];
         } else {
             if (sum_time - signal[i].time < start_time) {
                 before_interval += SignalState(signal[i].level, start_time - sum_time + signal[i].time);
             }
-            if (sum_time + signal[i].time > end_time) {
-                after_interval += SignalState(signal[i].level, (sum_time + signal[i].time) - end_time);
+            if (end_time - sum_time <= signal[i].time) {
+                after_interval += SignalState(signal[i].level, sum_time - end_time - 1);
             }
         }
     }
