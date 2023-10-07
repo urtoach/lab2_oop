@@ -104,34 +104,35 @@ namespace lab2{
           current_time++;
           i++;
         }
-        *this += SignalState(bool(current_level - 48), current_time);
+        *this += SignalState(bool(current_level - '0'), current_time);
       }   
     }
   }
   
   BinarySignal::BinarySignal(const BinarySignal& other) : count(other.count), signal(new SignalState[other.count]) {
-    for (int i = 0; i < count; i++) {
-      this->signal[i] = other.signal[i]; 
-    }
+    std::copy(other.signal, other.signal + count, this->signal);
   }
 
   BinarySignal &BinarySignal::operator =(const BinarySignal &other){
     if (this == &other) {
       return *this;
     }
-    delete[] signal;
+    if (count != 0){ delete[] signal; }
     this->count = other.count;
-    this->signal = new SignalState[count];
-    for (int i = 0; i < count; i++) {
-      this->signal[i] = other.signal[i]; 
+    if (other.count != 0) {
+      this->signal = new SignalState[count];
     }
+    std::copy(other.signal, other.signal + count, this->signal);
     return *this;
   }
 
   BinarySignal &BinarySignal::operator *=(int n){
     if (n <= 0){ 
       throw std::invalid_argument("error: not positive number");
-    }    
+    }  
+    else if (count == 0){
+      return *this;
+    }
     else{
       SignalState *result = new SignalState[n * count];
       int k = 0;
@@ -230,6 +231,14 @@ namespace lab2{
     return *this;
   }
 
+  int BinarySignal::totalTime(){
+    int sum_time = 0;
+    for (int i = 0; i < count; i++){
+      sum_time += signal[i].time;
+    }
+    return sum_time;
+  }
+  
   std::string BinarySignal::formatedSignal() const{
     std::string formated_signal;
     for (int i = 0; i < count; i++){
@@ -249,11 +258,16 @@ namespace lab2{
   }
 
   BinarySignal &BinarySignal::insertSignal(const BinarySignal &other, int time) {
-    if (time < 0) {
-        throw std::invalid_argument("error: invalid insertion time");
+    int total_time = this->totalTime();
+    if (time < 0 || total_time < time) {
+      throw std::invalid_argument("error: invalid insertion time");
     }
-
+    if (total_time == time){
+      *this += other;
+      return *this;
+    }
     int start_time = time;
+    
     if (start_time == 0){
       BinarySignal result(other);
       result += *this;
@@ -264,8 +278,8 @@ namespace lab2{
     
     BinarySignal before_interval;
     BinarySignal after_interval;
-    before_interval.count = 0;
-    after_interval.count = 0;
+    //before_interval.count = 0;
+    //after_interval.count = 0;
 
     int sum_time = 0;
 
@@ -287,16 +301,16 @@ namespace lab2{
         after_interval += signal[i];
       }
     }
-    delete [] signal; 
-    this->count = 0;
-    *this += before_interval;
-    *this += after_interval;
+    
+    before_interval += after_interval;
+    *this = before_interval;
     return *this;
   }
   
   BinarySignal &BinarySignal::removeSignal(int time, int duration) {
-    if (time < 0) {
-        throw std::invalid_argument("error: invalid time");
+    int total_time = this->totalTime();
+    if (time < 0 && total_time < time + duration) {
+      throw std::invalid_argument("error: invalid time");
     }
 
     int start_time = time;
@@ -309,23 +323,21 @@ namespace lab2{
 
     int sum_time = 0;
     for (int i = 0; i < count; i++) {
-        sum_time += signal[i].time;
-        if (sum_time <= start_time) {
-            before_interval += signal[i];
-        } else if (sum_time - signal[i].time > end_time) {
-            /*if (i > 0 && sum_time + signal[i-1].time > end_time){
-              after_interval += SignalState(signal[i].level, sum_time - end_time);
-              continue;
-            }*/
-            after_interval += signal[i];
-        } else {
-            if (sum_time - signal[i].time < start_time) {
-                before_interval += SignalState(signal[i].level, start_time - sum_time + signal[i].time);
-            }
-            if (end_time - sum_time <= signal[i].time) {
-                after_interval += SignalState(signal[i].level, sum_time - end_time - 1);
-            }
+      sum_time += signal[i].time;
+      if (sum_time <= start_time) {
+        before_interval += signal[i];
+      } 
+      else if (sum_time - signal[i].time > end_time) {
+          after_interval += signal[i];
+      } 
+      else {
+        if (sum_time - signal[i].time < start_time) {
+          before_interval += SignalState(signal[i].level, start_time - sum_time + signal[i].time);
         }
+        if (end_time - sum_time <= signal[i].time) {
+          after_interval += SignalState(signal[i].level, sum_time - end_time - 1);
+        }
+      }
     }
 
     before_interval += after_interval;

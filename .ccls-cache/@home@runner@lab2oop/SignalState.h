@@ -35,7 +35,7 @@ private:
   int count;
   SignalState *signal;
 public:
-  BinarySignal() : count(1), signal(new SignalState[this->count]) {}
+  BinarySignal() : count(0) {}
   BinarySignal(bool level, int time);
   BinarySignal(std::string signal_str);
   BinarySignal(const BinarySignal& other);
@@ -48,8 +48,9 @@ public:
   BinarySignal operator *(int n) const;
   BinarySignal &operator +=(const BinarySignal &other);
   BinarySignal &operator +=(const SignalState &other);
-
   bool operator[](int time);
+
+  int totalTime();
   void invertSignal();
   std::string formatedSignal() const;
   BinarySignal &insertSignal(const BinarySignal &other, int time);
