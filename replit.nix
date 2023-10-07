@@ -1,6 +1,7 @@
 { pkgs }: {
 	deps = [
-		pkgs.nano
+		pkgs.valgrind
+  pkgs.nano
   pkgs.cmake
   pkgs.clang_12
 		pkgs.ccls

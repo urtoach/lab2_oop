@@ -9,19 +9,19 @@ namespace lab2{
     this->level = level;
     this->time = time;
   }
-  SignalState::SignalState(std::string &signal){
+  SignalState::SignalState(const std::string &signal){
     if (signal.find_first_not_of("01") != std::string::npos){
       throw std::invalid_argument("error: invalid characters in string");
     }
     else{
-      for (int i = 0; i < (int)signal.length(); i++) {
+      int i;
+      for (i = 0; i < (int)signal.length(); i++) {
         if (signal[i] != signal[0]) {
-          signal.erase(i);
           break;
         }
       }
       this->level = signal[0];
-      this->time = signal.length();
+      this->time = i + 1;
     }
   }
   SignalState::SignalState(std::vector<int> &signal) {
@@ -75,7 +75,7 @@ namespace lab2{
   std::string SignalState::formatSignal(){
     if (time == 0){ return "x"; }
     std::string chart;
-    char symbol = (level ? '-' : '_'); 
+    char symbol = (level ? '\'' : '.'); 
     for (int i = 0; i < time; i++){
       chart += symbol;
     }
@@ -94,37 +94,32 @@ namespace lab2{
       throw std::invalid_argument("error: invalid characters in string");
     }
     else {
-      count = 1;
-      char curr = signal_str[0];
-      for (int i = 1; 1 < signal_str.length(); i++){
-        if (signal_str[i] != curr){
-          count++;
-          curr = signal_str[i];
+      count = 0;
+      signal = nullptr;
+
+      for (int i = 0; i < (int)signal_str.length(); i++) {
+        char current_level = signal_str[i];
+        int current_time = 1;
+        while (i < (int)signal_str.length() - 1 && signal_str[i + 1] == current_level) {
+          current_time++;
+          i++;
         }
-      }
-      signal = new SignalState[count];
-      int index = 0;
-      curr = signal_str[0];
-      for (int i = 0; i < (int)signal_str.length(); i++){
-        if (signal_str[i] != curr){
-          signal[index++] = SignalState(signal_str);
-          signal_str.erase(0, i + 1);
-          i = 0;
-        }
-      }
-      signal[index] = SignalState(signal_str);
+        *this += SignalState(bool(current_level - 48), current_time);
+      }   
     }
   }
   
   BinarySignal::BinarySignal(const BinarySignal& other) : count(other.count), signal(new SignalState[other.count]) {
-    this->count = other.count;
-    this->signal = new SignalState[count];
     for (int i = 0; i < count; i++) {
       this->signal[i] = other.signal[i]; 
     }
   }
 
   BinarySignal &BinarySignal::operator =(const BinarySignal &other){
+    if (this == &other) {
+      return *this;
+    }
+    delete[] signal;
     this->count = other.count;
     this->signal = new SignalState[count];
     for (int i = 0; i < count; i++) {
@@ -163,6 +158,12 @@ namespace lab2{
   }
   
   BinarySignal &BinarySignal::operator +=(const BinarySignal &other){
+    if (count == 0){
+      *this = other;
+    }
+    if (this->count == 1 && this->signal[0].time == 0){
+      *this = other;
+    }
     if (other.count != 0){
       SignalState *result = new SignalState[count + other.count];
       int j = 0;
@@ -182,6 +183,15 @@ namespace lab2{
   }
 
   BinarySignal &BinarySignal::operator +=(const SignalState &other){
+    if (count == 0){
+      signal = new SignalState[1];
+      signal[0] = other;
+      count = 1;
+      return *this;
+    }
+    if (this->count == 1 && this->signal[0].time == 0){
+      this->signal[0] = other;
+    }
     if (other.time != 0){
       SignalState *result = new SignalState[count + 1];
       for (int i = 0; i < count; i++){
@@ -203,7 +213,7 @@ namespace lab2{
         return signal[i].level;
       }
     }
-    return 
+    throw std::invalid_argument("error: strange error xD");
   }
 
   
@@ -231,52 +241,19 @@ namespace lab2{
     return formated_signal;
   }
 
-  BinarySignal &BinarySignal::insertSignal(const BinarySignal &other, int time){
-    if (time < 0 || time > count){
-      throw std::invalid_argument("error: invalid inseption time");
+  BinarySignal &BinarySignal::insertSignal(const BinarySignal &other, int time) {
+    if (time < 0) {
+        throw std::invalid_argument("error: invalid insertion time");
     }
-    if (time == 0){
+
+    int start_time = time;
+    if (start_time == 0){
       BinarySignal result(other);
       result += *this;
       delete [] signal;
       *this = result;
+      return *this;
     }
-    else{
-      BinarySignal result;
-      int sum_time = 0;
-      for (int i = 0; i < count; i++){
-        if (sum_time > time){
-          sum_time += signal[i + other.count].time;
-          result += signal[i];
-          continue;
-        }
-        if (sum_time + signal[i].time < time){
-          sum_time += signal[i].time;
-          result += signal[i];
-          continue;
-        }
-        for (int j = 0; j < signal[i].time; j++){
-          if (sum_time == time){
-            result += signal[i];
-            result.signal[count-1].time = j;
-            result += other;
-            break;
-          }
-          sum_time++;
-        }
-      }
-      delete [] signal;
-      *this = BinarySignal(result);
-    }
-    return *this;
-  }
-
-  BinarySignal &BinarySignal::removeSignal(int time, int duration){
-    if (time < 0 || time >= count){
-      throw std::invalid_argument("error: invalid time");
-    }
-    int start_time = time;
-    int end_time = time + duration - 1;
     
     BinarySignal before_interval;
     BinarySignal after_interval;
@@ -284,27 +261,66 @@ namespace lab2{
     after_interval.count = 0;
 
     int sum_time = 0;
-    for (int i = 0; i < count; i++){
+
+    for (int i = 0; i < count; i++) {
       sum_time += signal[i].time;
-      if (sum_time <= time){
+      if (sum_time < time) {
         before_interval += signal[i];
+      } 
+      else if (sum_time == time) {
+        before_interval += signal[i];
+        before_interval += other;
+      } 
+      else if (sum_time - signal[i].time < time) {
+        before_interval += SignalState(signal[i].level, start_time - sum_time + signal[i].time);
+        before_interval += other;
+        after_interval += SignalState(signal[i].level, sum_time - start_time);
       }
-      else if (sum_time > end_time) {
+      if (sum_time - signal[i].time > time) {
         after_interval += signal[i];
       }
-      else{
-        SignalState before_signal(signal[i].level, start_time - sum_time + signal[i].time);
-        before_interval += before_signal;
-        SignalState after_signal(signal[i].level, sum_time - end_time - 1);
-        after_interval += after_signal;
-      }
     }
-
-    delete[] signal;
-    *this = before_interval;
+    delete [] signal; 
+    this->count = 0;
+    *this += before_interval;
     *this += after_interval;
     return *this;
   }
+  
+  BinarySignal &BinarySignal::removeSignal(int time, int duration) {
+    if (time < 0) {
+        throw std::invalid_argument("error: invalid time");
+    }
 
+    int start_time = time;
+    int end_time = time + duration - 1;
+
+    BinarySignal before_interval;
+    BinarySignal after_interval;
+    before_interval.count = 0;
+    after_interval.count = 0;
+
+    int sum_time = 0;
+    for (int i = 0; i < count; i++) {
+        sum_time += signal[i].time;
+        if (sum_time <= start_time) {
+            before_interval += signal[i];
+        } else if (sum_time < end_time) {
+            after_interval += signal[i];
+        } else {
+            if (sum_time - signal[i].time < start_time) {
+                before_interval += SignalState(signal[i].level, start_time - sum_time + signal[i].time);
+            }
+            if (sum_time + signal[i].time > end_time) {
+                after_interval += SignalState(signal[i].level, (sum_time + signal[i].time) - end_time);
+            }
+        }
+    }
+
+    before_interval += after_interval;
+    *this = before_interval;
+
+    return *this;
+  }
 }
 

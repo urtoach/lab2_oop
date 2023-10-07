@@ -5,7 +5,6 @@
 #include <string>
 #include "SignalState.h"
 
-/*
 template <class T>
 
 T getNum(T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::max()) {
@@ -34,101 +33,51 @@ T getNum(T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::
   }
 }
 
-class SignalState {
-private:
-  bool level;
-  int time;
-public:
-  SignalState() : level(0), time(0) {}
-  SignalState(bool level, int time){
-    this->level = level;
-    this->time = time;
-  }
-  SignalState(std::string signal){
-    if (signal.find_first_not_of("01") != std::string::npos){
-      throw std::invalid_argument("error: invalid characters in string");
-    }
-    else{
-      int i;
-      for (i = 0; i < signal.length(); i++) {
-        if (signal[i] != signal[0]) {
-          signal.erase(i);
-          break;
-        }
-      }
-      this->level = signal[0];
-      this->time = i+1;
-    }
-  }
-
-  /*SignalState(const bool *signal, int length){
-    if (signal == nullptr || length <= 0){
-      throw std::invalid_argument("error: invalid array of signal");
-    }
-    else{
-      this->level = signal[0];
-      this->time = 1;
-      for (int i = 0; i < length; i++){
-        if (this->level != signal[i]){ 
-          (this->time)++;
-          break; 
-        }
-      }
-    }
-  }/////
-
-  void invertSignal(){
-    level = !level;
-  } 
-
-  void elongateSignal(int duration){
-    if (duration > 0){
-      time += duration;
-    }
-    else{
-      throw std::invalid_argument("error: invalid time value");
-    }
-  }
-
-  void truncateSignal(int duration){
-    if (duration > 0 && duration <= time){
-      time -= duration;
-    }
-    else{
-      throw std::invalid_argument("error: invalid time value");
-    }
-  }
-
-  std::string formatSignal(){
-    if (time == 0){ return "x"; }
-    std::string chart;
-    char symbol = (level ? '-' : '_'); 
-    for (int i = 0; i < time; i++){
-      chart += symbol;
-    }
-    return chart;
-  }
-  
-};
-*/
-
-
-
-
 
 using namespace lab2; 
 
 int main(){
-  SignalState a;
-  std::cout << a.formatSignal() << std::endl;
-  std::cout << "=========================" << std::endl;
-  SignalState b(0,10);
-  std::cout << b.formatSignal() << std::endl;
-  std::cout << "=========================" << std::endl;
-  std::cout << "enter signal" << std::endl;
-  std::string signal;
-  std::cin >> signal;
-  //std::cout << signal << std::endl;
-  SignalState c(signal);
-  std::cout << c.formatSignal() << std::endl;
+  
+  std::cout << "enter str1:" << std::endl;
+  std::string str1;
+  std::cin >> str1;
+  BinarySignal signal1(str1);
+  std::cout << "ur str1:" << std::endl;
+  std::cout << signal1.formatedSignal() << std::endl;
+  
+  std::cout << "enter str2:" << std::endl;
+  std::string str2;
+  std::cin >> str2;
+  BinarySignal signal2(str2);
+  std::cout << "ur str2:" << std::endl;
+  std::cout << signal2.formatedSignal() << std::endl;
+
+  BinarySignal signal3 = signal1 * 3;
+  std::cout << "\nur str3:" << std::endl;
+  std::cout << signal3.formatedSignal() << std::endl;
+
+  signal2 += signal1;
+  std::cout << "\nur new str2 += str1:" << std::endl;
+  std::cout << signal2.formatedSignal() << std::endl;
+
+  std::cout << "\nenter str4:" << std::endl;
+  std::string str4;
+  std::cin >> str4;
+  BinarySignal signal4(str4);
+  std::cout << "\nur str4:" << std::endl;
+  std::cout << signal4.formatedSignal() << std::endl;
+  std::cout << "enter time to insert str" << std::endl;
+  int n = getNum(0);
+  
+  std::cout << "\nenter str5 to insert" << std::endl;
+  std::string str5;
+  std::cin >> str5;
+  BinarySignal signal5(str5);
+  std::cout << "\nur str5:" << std::endl;
+  std::cout << signal5.formatedSignal() << std::endl;
+
+  signal4.insertSignal(str5, n);
+  std::cout << "\nur new str4, str5 in str4:" << std::endl;
+  std::cout << signal4.formatedSignal() << std::endl;
+  
 }

@@ -20,7 +20,7 @@ private:
 public:
   SignalState() : level(0), time(0) {}
   SignalState(bool level, int time);
-  SignalState(std::string &signal);
+  SignalState(const std::string &signal);
   SignalState(std::vector<int> &signal);
   SignalState(const SignalState &other);
   SignalState &operator =(const SignalState &other);
