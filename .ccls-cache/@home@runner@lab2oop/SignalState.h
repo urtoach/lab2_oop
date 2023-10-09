@@ -7,6 +7,7 @@
 #include <limits>
 #include <string>
 #include <vector>
+#include <regex>
 
 namespace lab2{
 
@@ -14,6 +15,8 @@ class BinarySignal;
   
 class SignalState {
   friend class BinarySignal;
+  friend std::ostream &operator <<(std::ostream &output, const SignalState &signal);
+  friend std::istream &operator >>(std::istream &input, SignalState &signal);
 private:
   bool level;
   int time;
@@ -27,10 +30,16 @@ public:
   void invertSignal();
   void elongateSignal(int duration);
   void truncateSignal(int duration);
-  std::string formatSignal();
+  std::string formatSignal() const;
 };
 
+#define NUMBER_FORMAT 0
+#define STRING_FORMAT 1
+#define VECTOR_FORMAT 2
+  
 class BinarySignal{
+  friend std::ostream &operator <<(std::ostream &output, const BinarySignal &signal);
+  friend std::istream &operator >>(std::istream &input, BinarySignal &signal);
 private:
   int count;
   SignalState *signal;

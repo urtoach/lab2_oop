@@ -70,24 +70,22 @@ int main(){
   std::cout << "\nur new str2 += str1:" << std::endl;
   std::cout << signal2.formatedSignal() << std::endl;*/
 
-  std::cout << "\nenter str4:" << std::endl;
-  std::string str4;
-  std::cin >> str4;
-  BinarySignal signal4(str4);
-  std::cout << "\nur str4:" << std::endl;
-  std::cout << signal4.formatedSignal() << std::endl;
+  std::cout << "\nenter signal4:" << std::endl;
+  BinarySignal signal4;
+  std::cin >> signal4;
+  std::cout << "\nur signal4:" << std::endl;
+  std::cout << signal4 << std::endl;
   std::cout << "enter time to insert str" << std::endl;
-  int n = getNum(0);
+  int n = 3;//getNum(0);
   
-  std::cout << "\nenter str5 to insert" << std::endl;
-  std::string str5;
-  std::cin >> str5;
-  BinarySignal signal5(str5);
-  std::cout << "\nur str5:" << std::endl;
-  std::cout << signal5.formatedSignal() << std::endl;
+  std::cout << "\nenter signal5 to insert" << std::endl;
+  BinarySignal signal5;
+  std::cin >> signal5;
+  std::cout << "\nur signal5:" << std::endl;
+  std::cout << signal5 << std::endl;
 
-  signal4.insertSignal(str5, n);
+  signal4.insertSignal(signal5, n);
   std::cout << "\nur new str4, str5 in str4:" << std::endl;
-  std::cout << signal4.formatedSignal() << std::endl;
+  std::cout << signal4 << std::endl;
   
 }

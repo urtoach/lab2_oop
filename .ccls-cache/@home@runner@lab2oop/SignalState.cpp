@@ -72,7 +72,7 @@ namespace lab2{
     }
   }
 
-  std::string SignalState::formatSignal(){
+  std::string SignalState::formatSignal() const{
     if (time == 0){ return "x"; }
     std::string chart;
     char symbol = (level ? '\'' : '.'); 
@@ -80,6 +80,31 @@ namespace lab2{
       chart += symbol;
     }
     return chart;
+  }
+
+  std::ostream &operator <<(std::ostream &output, const SignalState &signal){
+    output << signal.formatSignal();
+    return output;
+  }
+
+  std::istream& operator >>(std::istream& input, SignalState& signal) {
+    char peekChar = input.peek();
+    if (peekChar == '0' || peekChar == '1') {
+      int lvl, time;
+      input >> lvl >> time;
+      signal = SignalState(lvl, time);
+    } 
+    else if (peekChar == '"') {
+      std::string str;
+      input >> str;
+      str = str.substr(1);
+      str = str.substr(0, str.length() - 1);
+      signal = SignalState(str);
+    } 
+    else {
+      throw std::invalid_argument("error: invalid input");
+    }
+    return input;
   }
 
   //BinarySignal::BinarySignal() : count(1), signal(new SignalState[this->count]) {}
@@ -344,6 +369,42 @@ namespace lab2{
     *this = before_interval;
 
     return *this;
+  }
+
+  std::ostream &operator <<(std::ostream &output, const BinarySignal &signal){
+    output << signal.formatedSignal();
+    return output;
+  }
+
+  std::istream &operator >>(std::istream& input, BinarySignal& signal) {
+    char firstChar;
+    char second_char;
+    firstChar = input.get();
+    second_char = input.get();
+    input.putback(second_char);
+    input.putback(firstChar);
+      if (second_char == ' ' && (firstChar == '0' || firstChar == '1')) {
+          int lvl, time;
+            input >> lvl >> time;
+            signal = BinarySignal(lvl, time);
+        } 
+        else if (firstChar == 's') {
+            std::string input_str;
+            input >> input_str;
+            std::regex pattern("^str([01]+).*$");
+            std::smatch match;
+            if (std::regex_match(input_str, match, pattern)) {
+                std::string binarySequence = match[1].str();
+                signal = BinarySignal(binarySequence);
+            } 
+            else {
+                throw std::invalid_argument("error: invalid input");
+            }
+        } 
+        else {
+            throw std::invalid_argument("error: invalid input");
+        }
+    return input;
   }
 }
 
