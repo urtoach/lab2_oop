@@ -87,7 +87,7 @@ namespace lab2{
     return output;
   }
 
-  std::istream &operator >>(std::istream& input, SignalState& signal) {
+  std::istream &operator >>(std::istream& input, SignalState &signal) {
     char first_char;
     char second_char;
     first_char = input.get();
