@@ -27,6 +27,7 @@ public:
   SignalState(std::vector<int> &signal);
   SignalState(const SignalState &other);
   SignalState &operator =(const SignalState &other);
+  SignalState &operator ~();
   void invertSignal();
   void elongateSignal(int duration);
   void truncateSignal(int duration);

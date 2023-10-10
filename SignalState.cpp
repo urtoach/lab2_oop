@@ -49,11 +49,17 @@ namespace lab2{
     this->time = other.time;
     return *this;
   }
+  
 
   void SignalState::invertSignal(){
     level = !level;
   } 
 
+  SignalState &SignalState::operator ~(){
+    this->invertSignal();
+    return *this;
+  }
+  
   void SignalState::elongateSignal(int duration){
     if (duration > 0){
       time += duration;
@@ -141,13 +147,29 @@ namespace lab2{
           i++;
         }
         *this += SignalState(bool(current_level - '0'), current_time);
-      }   
+      }
     }
   }
   
   BinarySignal::BinarySignal(const BinarySignal& other) : count(other.count), signal(new SignalState[other.count]) {
     std::copy(other.signal, other.signal + count, this->signal);
   }
+
+  BinarySignal::BinarySignal(BinarySignal&& other) : count(other.count), signal(other.signal) {
+    other.count = 0;
+    other.signal = nullptr;
+  }
+
+  /*BinarySignal& BinarySignal::operator =(BinarySignal&& other)  {
+    if (this != &other) {
+      delete[] signal;
+      count = other.count;
+      signal = other.signal;
+      other.count = 0;
+      other.signal = nullptr;
+    }
+    return *this;
+  }*/
 
   BinarySignal &BinarySignal::operator =(const BinarySignal &other){
     if (this == &other) {
@@ -218,22 +240,6 @@ namespace lab2{
     }
     return *this;
   }
-
-  BinarySignal::BinarySignal(BinarySignal&& other) : count(other.count), signal(other.signal) {
-    other.count = 0;
-    other.signal = nullptr;
-  }
-
-  /*BinarySignal& BinarySignal::operator =(BinarySignal&& other)  {
-    if (this != &other) {
-      delete[] signal;
-      count = other.count;
-      signal = other.signal;
-      other.count = 0;
-      other.signal = nullptr;
-    }
-    return *this;
-  }*/
 
   BinarySignal &BinarySignal::operator +=(const SignalState &other){
     if (count == 0){
