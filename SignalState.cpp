@@ -87,7 +87,7 @@ namespace lab2{
     return output;
   }
 
-  std::istream &operator >>(std::istream& input, SignalStatel& signal) {
+  std::istream &operator >>(std::istream& input, SignalState& signal) {
     char first_char;
     char second_char;
     first_char = input.get();
@@ -405,8 +405,8 @@ namespace lab2{
       std::regex pattern("^str([01]+).*$");
       std::smatch match;
       if (std::regex_match(input_str, match, pattern)) {
-        std::string binarySequence = match[1].str();
-        signal = BinarySignal(binarySequence);
+        std::string binary_sequence = match[1].str();
+        signal = BinarySignal(binary_sequence);
       } 
       else {
         throw std::invalid_argument("error: invalid input");
