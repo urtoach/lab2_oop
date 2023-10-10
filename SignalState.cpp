@@ -219,6 +219,22 @@ namespace lab2{
     return *this;
   }
 
+  BinarySignal::BinarySignal(BinarySignal&& other) : count(other.count), signal(other.signal) {
+    other.count = 0;
+    other.signal = nullptr;
+  }
+
+  /*BinarySignal& BinarySignal::operator =(BinarySignal&& other)  {
+    if (this != &other) {
+      delete[] signal;
+      count = other.count;
+      signal = other.signal;
+      other.count = 0;
+      other.signal = nullptr;
+    }
+    return *this;
+  }*/
+
   BinarySignal &BinarySignal::operator +=(const SignalState &other){
     if (count == 0){
       signal = new SignalState[1];

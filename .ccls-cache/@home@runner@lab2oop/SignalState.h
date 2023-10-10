@@ -51,6 +51,8 @@ public:
   ~BinarySignal(){
     delete[] signal;
   }
+  BinarySignal(BinarySignal&& other) : count(other.count), signal(other.signal) {}
+  
   BinarySignal &operator ~();
   BinarySignal &operator =(const BinarySignal &other);
   BinarySignal &operator *=(int n);
