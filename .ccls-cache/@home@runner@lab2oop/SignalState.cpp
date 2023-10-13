@@ -32,10 +32,16 @@ namespace lab2{
 
   //SignalState::SignalState() : level(0), time(0) {}
 
-  SignalState::SignalState(bool level, int time){
-    this->level = level;
-    this->time = time;
+  SignalState::SignalState(int level, int time){
+    if (!(level < 0 && level > 1) && time > 0){
+      this->level = level;
+      this->time = time;
+    }
+    else{
+      throw std::invalid_argument("error: invalid signal state");
+    }
   }
+  
   SignalState::SignalState(const std::string &signal){
     if (signal.find_first_not_of("01") != std::string::npos){
       throw std::invalid_argument("error: invalid characters in string");
@@ -86,12 +92,16 @@ namespace lab2{
   }
 
   void SignalState::setLevel(bool level){
-    
     this->level = level;
   }
 
   void SignalState::setTime(int time){
-    this->time = time;
+    if (time <= 0){
+      this->time = time;
+    }
+    else{
+      throw std::invalid_argument("error: time must be positive");
+    }
   }
   
 
@@ -174,24 +184,44 @@ namespace lab2{
   }
 
   std::ostream &operator <<(std::ostream &output, const SignalState &signal){
-    output << signal.formatSignal();
+    char ch_lvl = signal.level ? '1' : '0';
+    output << ch_lvl << " " << signal.time;
     return output;
   }
 
-  std::istream &operator >>(std::istream& input, SignalState &signal) {
-    
-      int lvl, time;
-      input >> lvl >> time;
-      signal = SignalState(lvl, time);
-    
+  std::istream &operator >>(std::istream &input, SignalState &signal) {
+    int lvl, time;
+    input >> lvl >> time;
+    if (input.fail()) {
+      input.setstate(std::ios_base::failbit);
+    } 
+    else if (input.eof()) {
+      input.setstate(std::ios_base::eofbit);
+    } 
+    else if (input.bad()) {
+      input.setstate(std::ios_base::badbit);
+    } 
+    else {
+      try{
+        signal = SignalState(lvl, time);
+      }
+      catch(...){
+        input.setstate(std::ios_base::failbit);    
+      }
+    }
     return input;
   }
 
   //BinarySignal::BinarySignal() : count(1), signal(new SignalState[this->count]) {}
   
-  BinarySignal::BinarySignal(bool level, int time): count(1), signal(new SignalState[this->count]) {
-    signal[0].time = time;
-    signal[0].level = level;
+  BinarySignal::BinarySignal(int level, int time): count(1), signal(new SignalState[this->count]) {
+    if (!(level < 0 && level > 1) && time > 0){
+      signal[0].time = time;
+      signal[0].level = level;
+    }
+    else{
+      throw std::invalid_argument("error: invalid signal state");
+    }
   }
   
   BinarySignal::BinarySignal(std::string signal_str){
@@ -225,9 +255,9 @@ namespace lab2{
 
   BinarySignal& BinarySignal::operator =(BinarySignal&& other)  {
     if (this != &other) {
-      delete[] signal;
-      count = other.count;
-      signal = other.signal;
+      if (count != 0 && !signal){ delete[] signal; }
+      this->count = other.count;
+      this->signal = other.signal;
       other.count = 0;
       other.signal = nullptr;
     }
@@ -466,40 +496,69 @@ namespace lab2{
     return *this;
   }
 
-  std::ostream &operator <<(std::ostream &output, const BinarySignal &signal){
-    output << signal.formatedSignal();
+  void BinarySignal::input(int input_format){
+    switch(input_format){
+      case NUMBER_FORMAT:{
+        bool lvl = getNum(0, 1);
+        int time = getNum(1);
+        *this = BinarySignal(lvl, time);
+        break;
+      }
+      case STRING_FORMAT:{
+        std::string signal_str;
+        std::cin >> signal_str;
+        *this = BinarySignal(signal_str);
+        break;
+      }
+      default:{
+       throw std::invalid_argument("error: invalid input format"); 
+      }
+    }
+    if (std::cin.eof()){
+      throw std::runtime_error("find eof");
+    }
+  }
+
+  void BinarySignal::output() const{
+    for (int i = 0; i < count; i++) {
+      char ch_lvl = signal[i].level ? '1' : '0';
+      std::cout << std::string(signal[i].time, ch_lvl);
+    }
+    std::cout << std::endl;
+  }
+
+  std::ostream &operator <<(std::ostream &output, const BinarySignal &state){
+    std::string signal_str;
+    for (int i = 0; i < state.count; i++){
+      signal_str += std::string(state.signal[i].getTime(), (state.signal[i].getLevel() ? '1' : '0'));
+    }
+    output << signal_str;
     return output;
   }
 
-  std::istream &operator >>(std::istream& input, BinarySignal& signal) {
-    char first_char;
-    char second_char;
-    first_char = input.get();
-    second_char = input.get();
-    input.putback(second_char);
-    input.putback(first_char);
-    if (second_char == ' ' && (first_char == '0' || first_char == '1')) {
-      int lvl, time;
-      input >> lvl >> time;
-      signal = BinarySignal(lvl, time);
+  std::istream &operator >>(std::istream& input, BinarySignal& state) {
+    std::string signal_str;
+    input >> signal_str;
+    if (input.fail()) {
+      input.setstate(std::ios_base::failbit);
     } 
-    else if (first_char == 's') {
-      std::string input_str;
-      input >> input_str;
-      std::regex pattern("^str([01]+).*$");
-      std::smatch match;
-      if (std::regex_match(input_str, match, pattern)) {
-        std::string binary_sequence = match[1].str();
-        signal = BinarySignal(binary_sequence);
-      } 
-      else {
-        throw std::invalid_argument("error: invalid input");
-      }
+    else if (input.eof()) {
+      input.setstate(std::ios_base::eofbit);
+    } 
+    else if (input.bad()) {
+      input.setstate(std::ios_base::badbit);
     } 
     else {
-      throw std::invalid_argument("error: invalid input");
+      try{
+        state = BinarySignal(signal_str);
+      }
+      catch (...){
+        input.setstate(std::ios_base::failbit);
+      }
     }
     return input;
   }
+
+
 }
 

@@ -59,11 +59,11 @@ int main(){
   std::cout << "\nur new str4, str5 in str4:" << std::endl;
   std::cout << signal4 << std::endl; */
 
-  SignalState state;
-  state.input(NUMBER_FORMAT);
-  state.output(STRING_FORMAT);
-  std::cout << "============" << std::endl;
-  state.input(STRING_FORMAT);
-  state.output(NUMBER_FORMAT);
-  
+  /*SignalState state;
+  std::cin >> state;
+  std::cout << state << std::endl;
+  std::cout << "============" << std::endl;*/
+  BinarySignal signal;
+  std::cin >> signal;
+  std::cout << signal << std::endl;
 }

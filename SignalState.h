@@ -25,7 +25,7 @@ private:
   int time;
 public:
   SignalState() : level(0), time(0) {}
-  SignalState(bool level, int time);
+  SignalState(int level, int time);
   SignalState(const std::string &signal);
   SignalState(std::vector<int> &signal);
   SignalState(const SignalState &other);
@@ -57,7 +57,7 @@ private:
   SignalState *signal;
 public:
   BinarySignal() : count(0) {}
-  BinarySignal(bool level, int time);
+  BinarySignal(int level, int time);
   BinarySignal(std::string signal_str);
   BinarySignal(const BinarySignal& other);
   ~BinarySignal(){
@@ -75,14 +75,13 @@ public:
   BinarySignal &operator +=(const SignalState &other);
   bool operator[](int time);
 
-  void input();
-  void output();
+  void input(int input_format);
+  void output() const;
   int totalTime();
   void invertSignal();
   std::string formatedSignal() const;
   BinarySignal &insertSignal(const BinarySignal &other, int time);
   BinarySignal &removeSignal(int time, int duration);
-  
 };
 
   
