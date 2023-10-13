@@ -3,6 +3,33 @@
 
 namespace lab2{
 
+  template <class T>
+  T getNum(T min, T max) {
+    T val;
+    while (true) {
+      std::cin >> val;
+      if (std::cin.eof()) {
+        throw std::runtime_error("find eof");
+      } 
+      else if (std::cin.bad()) {
+        throw std::runtime_error(std::string("failed to read number: ") + strerror(errno));
+      } 
+      else if (std::cin.fail()) {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "error. repeat" << std::endl;
+      } 
+      else if (val >= min && val <= max) {
+        return val;
+      }
+      else{
+        std::cin.clear();
+        std::cin.ignore();
+        std::cout << "error. repeat" << std::endl;
+      }
+    }
+  }
+
   //SignalState::SignalState() : level(0), time(0) {}
 
   SignalState::SignalState(bool level, int time){
@@ -21,7 +48,7 @@ namespace lab2{
         }
       }
       this->level = signal[0];
-      this->time = i + 1;
+      this->time = i;
     }
   }
   SignalState::SignalState(std::vector<int> &signal) {
@@ -49,11 +76,35 @@ namespace lab2{
     this->time = other.time;
     return *this;
   }
+  
+  bool SignalState::getLevel() const{
+    return level;
+  }
+
+  int SignalState::getTime() const{
+    return time;
+  }
+
+  void SignalState::setLevel(bool level){
+    
+    this->level = level;
+  }
+
+  void SignalState::setTime(int time){
+    this->time = time;
+  }
+  
 
   void SignalState::invertSignal(){
     level = !level;
   } 
 
+  SignalState SignalState::operator ~(){
+    SignalState result = *this;
+    result.invertSignal();
+    return result;
+  }
+  
   void SignalState::elongateSignal(int duration){
     if (duration > 0){
       time += duration;
@@ -82,39 +133,57 @@ namespace lab2{
     return chart;
   }
 
+  void SignalState::input(int input_format){
+    switch(input_format){
+      case NUMBER_FORMAT:{
+        bool lvl = getNum(0, 1);
+        int time = getNum(1);
+        *this = SignalState(lvl, time);
+        break;
+      }
+      case STRING_FORMAT:{
+        std::string signal_str;
+        std::cin >> signal_str;
+        *this = SignalState(signal_str);
+        break;
+      }
+      default:{
+       throw std::invalid_argument("error: invalid input format"); 
+      }
+    }
+    if (std::cin.eof()){
+      throw std::runtime_error("find eof");
+    }
+  }
+
+  void SignalState::output(int output_format){
+    switch(output_format){
+      case NUMBER_FORMAT:{
+        std::cout << level << " " << time << std::endl;
+        break;
+      }
+      case STRING_FORMAT:{
+        char ch_lvl = level ? '1' : '0';
+        std::cout << std::string(time, ch_lvl) << std::endl;
+        break;
+      }
+      default:{
+        throw std::invalid_argument("error: invalid output format");
+      }
+    }
+  }
+
   std::ostream &operator <<(std::ostream &output, const SignalState &signal){
     output << signal.formatSignal();
     return output;
   }
 
   std::istream &operator >>(std::istream& input, SignalState &signal) {
-    char first_char;
-    char second_char;
-    first_char = input.get();
-    second_char = input.get();
-    input.putback(second_char);
-    input.putback(first_char);
-    if (second_char == ' ' && (first_char == '0' || first_char == '1')) {
+    
       int lvl, time;
       input >> lvl >> time;
       signal = SignalState(lvl, time);
-    } 
-    else if (first_char == 's') {
-      std::string input_str;
-      input >> input_str;
-      std::regex pattern("^str([01]+).*$");
-      std::smatch match;
-      if (std::regex_match(input_str, match, pattern)) {
-        std::string binarySequence = match[1].str();
-        signal = SignalState(binarySequence);
-      } 
-      else {
-        throw std::invalid_argument("error: invalid input");
-      }
-    } 
-    else {
-      throw std::invalid_argument("error: invalid input");
-    }
+    
     return input;
   }
 
@@ -141,12 +210,28 @@ namespace lab2{
           i++;
         }
         *this += SignalState(bool(current_level - '0'), current_time);
-      }   
+      }
     }
   }
   
   BinarySignal::BinarySignal(const BinarySignal& other) : count(other.count), signal(new SignalState[other.count]) {
     std::copy(other.signal, other.signal + count, this->signal);
+  }
+
+  BinarySignal::BinarySignal(BinarySignal&& other) : count(other.count), signal(other.signal) {
+    other.count = 0;
+    other.signal = nullptr;
+  }
+
+  BinarySignal& BinarySignal::operator =(BinarySignal&& other)  {
+    if (this != &other) {
+      delete[] signal;
+      count = other.count;
+      signal = other.signal;
+      other.count = 0;
+      other.signal = nullptr;
+    }
+    return *this;
   }
 
   BinarySignal &BinarySignal::operator =(const BinarySignal &other){
@@ -219,22 +304,6 @@ namespace lab2{
     return *this;
   }
 
-  BinarySignal::BinarySignal(BinarySignal&& other) : count(other.count), signal(other.signal) {
-    other.count = 0;
-    other.signal = nullptr;
-  }
-
-  /*BinarySignal& BinarySignal::operator =(BinarySignal&& other)  {
-    if (this != &other) {
-      delete[] signal;
-      count = other.count;
-      signal = other.signal;
-      other.count = 0;
-      other.signal = nullptr;
-    }
-    return *this;
-  }*/
-
   BinarySignal &BinarySignal::operator +=(const SignalState &other){
     if (count == 0){
       signal = new SignalState[1];
@@ -276,11 +345,12 @@ namespace lab2{
     }
   }
 
-  BinarySignal &BinarySignal::operator ~(){
+  BinarySignal BinarySignal::operator ~(){
+    BinarySignal result = *this;
     for (int i = 0; i < count; i++){
-      signal[i].invertSignal();
+      result.signal[i].invertSignal();
     }
-    return *this;
+    return result;
   }
 
   int BinarySignal::totalTime(){
@@ -330,8 +400,6 @@ namespace lab2{
     
     BinarySignal before_interval;
     BinarySignal after_interval;
-    //before_interval.count = 0;
-    //after_interval.count = 0;
 
     int sum_time = 0;
 

@@ -11,6 +11,9 @@
 
 namespace lab2{
 
+template <class T>
+T getNum(T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::max());
+
 class BinarySignal;
   
 class SignalState {
@@ -27,7 +30,15 @@ public:
   SignalState(std::vector<int> &signal);
   SignalState(const SignalState &other);
   SignalState &operator =(const SignalState &other);
-  SignalState &operator ~();
+  SignalState operator ~();
+
+  bool getLevel() const;
+  int getTime() const;
+  void setLevel(bool level);
+  void setTime(int time);
+  
+  void input(int input_format);
+  void output(int output_format);
   void invertSignal();
   void elongateSignal(int duration);
   void truncateSignal(int duration);
@@ -52,9 +63,11 @@ public:
   ~BinarySignal(){
     delete[] signal;
   }
-  BinarySignal(BinarySignal&& other) : count(other.count), signal(other.signal) {}
-  
-  BinarySignal &operator ~();
+  BinarySignal(BinarySignal&& other);
+
+  BinarySignal& operator =(BinarySignal&& other);
+
+  BinarySignal operator ~();
   BinarySignal &operator =(const BinarySignal &other);
   BinarySignal &operator *=(int n);
   BinarySignal operator *(int n) const;
@@ -62,6 +75,8 @@ public:
   BinarySignal &operator +=(const SignalState &other);
   bool operator[](int time);
 
+  void input();
+  void output();
   int totalTime();
   void invertSignal();
   std::string formatedSignal() const;
