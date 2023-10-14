@@ -1,0 +1,2 @@
+/nix/store/dq0xwmsk1g0i2ayg6pb7y87na2knzylh-gcc-wrapper-11.3.0/bin/ar qc libBinarySignal.a CMakeFiles/BinarySignal.dir/BinarySignal.cpp.o
+/nix/store/dq0xwmsk1g0i2ayg6pb7y87na2knzylh-gcc-wrapper-11.3.0/bin/ranlib libBinarySignal.a

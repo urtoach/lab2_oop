@@ -130,6 +130,32 @@ SignalState/fast:
 .PHONY : SignalState/fast
 
 #=============================================================================
+# Target rules for targets named BinarySignal
+
+# Build rule for target.
+BinarySignal: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 BinarySignal
+.PHONY : BinarySignal
+
+# fast build rule for target.
+BinarySignal/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/BinarySignal.dir/build.make CMakeFiles/BinarySignal.dir/build
+.PHONY : BinarySignal/fast
+
+#=============================================================================
+# Target rules for targets named GetNum
+
+# Build rule for target.
+GetNum: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 GetNum
+.PHONY : GetNum
+
+# fast build rule for target.
+GetNum/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GetNum.dir/build.make CMakeFiles/GetNum.dir/build
+.PHONY : GetNum/fast
+
+#=============================================================================
 # Target rules for targets named lab2
 
 # Build rule for target.
@@ -141,6 +167,30 @@ lab2: cmake_check_build_system
 lab2/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lab2.dir/build.make CMakeFiles/lab2.dir/build
 .PHONY : lab2/fast
+
+BinarySignal.o: BinarySignal.cpp.o
+.PHONY : BinarySignal.o
+
+# target to build an object file
+BinarySignal.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/BinarySignal.dir/build.make CMakeFiles/BinarySignal.dir/BinarySignal.cpp.o
+.PHONY : BinarySignal.cpp.o
+
+BinarySignal.i: BinarySignal.cpp.i
+.PHONY : BinarySignal.i
+
+# target to preprocess a source file
+BinarySignal.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/BinarySignal.dir/build.make CMakeFiles/BinarySignal.dir/BinarySignal.cpp.i
+.PHONY : BinarySignal.cpp.i
+
+BinarySignal.s: BinarySignal.cpp.s
+.PHONY : BinarySignal.s
+
+# target to generate assembly for a file
+BinarySignal.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/BinarySignal.dir/build.make CMakeFiles/BinarySignal.dir/BinarySignal.cpp.s
+.PHONY : BinarySignal.cpp.s
 
 SignalState.o: SignalState.cpp.o
 .PHONY : SignalState.o
@@ -198,8 +248,13 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... BinarySignal"
+	@echo "... GetNum"
 	@echo "... SignalState"
 	@echo "... lab2"
+	@echo "... BinarySignal.o"
+	@echo "... BinarySignal.i"
+	@echo "... BinarySignal.s"
 	@echo "... SignalState.o"
 	@echo "... SignalState.i"
 	@echo "... SignalState.s"

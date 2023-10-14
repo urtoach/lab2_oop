@@ -93,6 +93,13 @@ lab2_EXTERNAL_OBJECTS =
 lab2: CMakeFiles/lab2.dir/main.cpp.o
 lab2: CMakeFiles/lab2.dir/build.make
 lab2: libSignalState.a
+lab2: libBinarySignal.a
+lab2: libGetNum.a
+lab2: libSignalState.a
+lab2: libBinarySignal.a
+lab2: libGetNum.a
+lab2: libBinarySignal.a
+lab2: libSignalState.a
 lab2: CMakeFiles/lab2.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/runner/lab2oop/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable lab2"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/lab2.dir/link.txt --verbose=$(VERBOSE)

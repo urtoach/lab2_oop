@@ -4,6 +4,8 @@
 #include <limits>
 #include <string>
 #include "SignalState.h"
+#include "BinarySignal.h"
+
 
 using namespace lab2; 
 

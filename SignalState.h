@@ -1,18 +1,19 @@
 #ifndef SIGNAL_STATE_H
 #define SIGNAL_STATE_H
 
-#include <iostream>
 #include <cstring>
 #include <iostream>
 #include <limits>
 #include <string>
 #include <vector>
-#include <regex>
+
+#include "GetNum.h"
 
 namespace lab2{
 
-template <class T>
-T getNum(T min = std::numeric_limits<T>::min(), T max = std::numeric_limits<T>::max());
+#define NUMBER_FORMAT 0
+#define STRING_FORMAT 1
+#define VECTOR_FORMAT 2
 
 class BinarySignal;
   
@@ -44,46 +45,6 @@ public:
   void truncateSignal(int duration);
   std::string formatSignal() const;
 };
-
-#define NUMBER_FORMAT 0
-#define STRING_FORMAT 1
-#define VECTOR_FORMAT 2
-  
-class BinarySignal{
-  friend std::ostream &operator <<(std::ostream &output, const BinarySignal &signal);
-  friend std::istream &operator >>(std::istream &input, BinarySignal &signal);
-private:
-  int count;
-  SignalState *signal;
-public:
-  BinarySignal() : count(0) {}
-  BinarySignal(int level, int time);
-  BinarySignal(std::string signal_str);
-  BinarySignal(const BinarySignal& other);
-  ~BinarySignal(){
-    delete[] signal;
-  }
-  BinarySignal(BinarySignal&& other);
-
-  BinarySignal& operator =(BinarySignal&& other);
-
-  BinarySignal operator ~();
-  BinarySignal &operator =(const BinarySignal &other);
-  BinarySignal &operator *=(int n);
-  BinarySignal operator *(int n) const;
-  BinarySignal &operator +=(const BinarySignal &other);
-  BinarySignal &operator +=(const SignalState &other);
-  bool operator[](int time);
-
-  void input(int input_format);
-  void output() const;
-  int totalTime();
-  void invertSignal();
-  std::string formatedSignal() const;
-  BinarySignal &insertSignal(const BinarySignal &other, int time);
-  BinarySignal &removeSignal(int time, int duration);
-};
-
   
 }
 

@@ -44,5 +44,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/SignalState.dir/DependInfo.cmake"
+  "CMakeFiles/BinarySignal.dir/DependInfo.cmake"
+  "CMakeFiles/GetNum.dir/DependInfo.cmake"
   "CMakeFiles/lab2.dir/DependInfo.cmake"
   )

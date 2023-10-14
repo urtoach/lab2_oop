@@ -64,6 +64,8 @@ CMAKE_BINARY_DIR = /home/runner/lab2oop/build
 
 # The main recursive "all" target.
 all: CMakeFiles/SignalState.dir/all
+all: CMakeFiles/BinarySignal.dir/all
+all: CMakeFiles/GetNum.dir/all
 all: CMakeFiles/lab2.dir/all
 .PHONY : all
 
@@ -73,6 +75,8 @@ preinstall:
 
 # The main recursive "clean" target.
 clean: CMakeFiles/SignalState.dir/clean
+clean: CMakeFiles/BinarySignal.dir/clean
+clean: CMakeFiles/GetNum.dir/clean
 clean: CMakeFiles/lab2.dir/clean
 .PHONY : clean
 
@@ -83,7 +87,7 @@ clean: CMakeFiles/lab2.dir/clean
 CMakeFiles/SignalState.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalState.dir/build.make CMakeFiles/SignalState.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalState.dir/build.make CMakeFiles/SignalState.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/runner/lab2oop/build/CMakeFiles --progress-num=1,2 "Built target SignalState"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/runner/lab2oop/build/CMakeFiles --progress-num=4,5 "Built target SignalState"
 .PHONY : CMakeFiles/SignalState.dir/all
 
 # Build rule for subdir invocation for target.
@@ -103,18 +107,73 @@ CMakeFiles/SignalState.dir/clean:
 .PHONY : CMakeFiles/SignalState.dir/clean
 
 #=============================================================================
+# Target rules for target CMakeFiles/BinarySignal.dir
+
+# All Build rule for target.
+CMakeFiles/BinarySignal.dir/all: CMakeFiles/SignalState.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/BinarySignal.dir/build.make CMakeFiles/BinarySignal.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/BinarySignal.dir/build.make CMakeFiles/BinarySignal.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/runner/lab2oop/build/CMakeFiles --progress-num=1,2 "Built target BinarySignal"
+.PHONY : CMakeFiles/BinarySignal.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/BinarySignal.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/runner/lab2oop/build/CMakeFiles 4
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/BinarySignal.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/runner/lab2oop/build/CMakeFiles 0
+.PHONY : CMakeFiles/BinarySignal.dir/rule
+
+# Convenience name for target.
+BinarySignal: CMakeFiles/BinarySignal.dir/rule
+.PHONY : BinarySignal
+
+# clean rule for target.
+CMakeFiles/BinarySignal.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/BinarySignal.dir/build.make CMakeFiles/BinarySignal.dir/clean
+.PHONY : CMakeFiles/BinarySignal.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/GetNum.dir
+
+# All Build rule for target.
+CMakeFiles/GetNum.dir/all: CMakeFiles/SignalState.dir/all
+CMakeFiles/GetNum.dir/all: CMakeFiles/BinarySignal.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GetNum.dir/build.make CMakeFiles/GetNum.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GetNum.dir/build.make CMakeFiles/GetNum.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/runner/lab2oop/build/CMakeFiles --progress-num=3 "Built target GetNum"
+.PHONY : CMakeFiles/GetNum.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/GetNum.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/runner/lab2oop/build/CMakeFiles 5
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/GetNum.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/runner/lab2oop/build/CMakeFiles 0
+.PHONY : CMakeFiles/GetNum.dir/rule
+
+# Convenience name for target.
+GetNum: CMakeFiles/GetNum.dir/rule
+.PHONY : GetNum
+
+# clean rule for target.
+CMakeFiles/GetNum.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/GetNum.dir/build.make CMakeFiles/GetNum.dir/clean
+.PHONY : CMakeFiles/GetNum.dir/clean
+
+#=============================================================================
 # Target rules for target CMakeFiles/lab2.dir
 
 # All Build rule for target.
 CMakeFiles/lab2.dir/all: CMakeFiles/SignalState.dir/all
+CMakeFiles/lab2.dir/all: CMakeFiles/BinarySignal.dir/all
+CMakeFiles/lab2.dir/all: CMakeFiles/GetNum.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lab2.dir/build.make CMakeFiles/lab2.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/lab2.dir/build.make CMakeFiles/lab2.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/runner/lab2oop/build/CMakeFiles --progress-num=3,4 "Built target lab2"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/runner/lab2oop/build/CMakeFiles --progress-num=6,7 "Built target lab2"
 .PHONY : CMakeFiles/lab2.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/lab2.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/runner/lab2oop/build/CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/runner/lab2oop/build/CMakeFiles 7
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/lab2.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/runner/lab2oop/build/CMakeFiles 0
 .PHONY : CMakeFiles/lab2.dir/rule
